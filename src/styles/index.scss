@@ -1,0 +1,72 @@
+$primary-color: #009FE3;
+$accent-color: #509901;
+$warn-color: #F95454;
+
+.card {
+  // css for a card background
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+
+  .card-header {
+    // css for the header in a card
+    background-color: $primary-color;
+    color: #F8F8F8;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .card-body {
+    // css for the body in a card
+    padding: 2px 16px;
+  }
+
+  .card-footer {
+    // css for the footer in a card
+    margin-top: 15px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+  }
+}
+
+.todoTaskContainer {
+  // css for the task item
+
+  .taskLabel {
+    // css for text of a task
+
+    &:before {
+      // css for the check-mark icon
+      margin-right: 10px;
+    }
+  }
+
+  .removeBtn {
+    // css for the remove button
+    margin-left: 5px;
+  }
+}
+
+#todoContainer {
+  // css for the container of the to-do box
+  width: 50vw;
+  min-width: 210px;
+  margin: 50px auto 10px auto;
+}
+
+#createTaskContainer {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#taskListContainer {
+  // css for the container of the to-do task items
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

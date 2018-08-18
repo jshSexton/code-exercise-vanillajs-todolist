@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div id="todoContainer">
+    <div class="card">
+        <div class="card-header">
+            <h3>To-Do List</h3>
+        </div>
+        <div class="card-body">
+            <div id="createTaskContainer">
+                <form id="taskForm">
+                    <button type="submit" class="fa fa-plus"></button>
+                    <label for="taskInput">
+                        <input type="text" id="taskInput" title="New Task Input" placeholder="Add Task">
+                    </label>
+                </form>
+            </div>
+            <div id="taskListContainer">
+                <div class="todoTaskContainer">
+                    <span class="taskLabel fa fa-check-circle-o">Learn more about React</span>
+                    <button class="removeBtn fa fa-close"></button>
+                </div>
+                <div class="todoTaskContainer">
+                    <span class="taskLabel fa fa-circle-o">Go out with colleges</span>
+                    <button class="removeBtn fa fa-close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div id="filterContainer">
+                    <span>Filter:
+                        <button name="filterBtn" value="allFilter">all</button>
+                        |
+                        <button name="filterBtn" value="todoFilter">todo</button>
+                        |
+                        <button name="filterBtn" value="doneFilter">done</button>
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
