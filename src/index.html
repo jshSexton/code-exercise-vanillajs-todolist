@@ -5,6 +5,7 @@
     <title>To-Do List</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 <body>
 <div id="todoContainer">
@@ -21,21 +22,21 @@
                     </label>
                 </form>
             </div>
-            <div id="taskListContainer">
-                <div class="todoTaskContainer">
-                    <span class="taskLabel fa fa-check-circle-o">Learn more about React</span>
-                    <button class="removeBtn fa fa-close"></button>
-                </div>
-                <div class="todoTaskContainer">
-                    <span class="taskLabel fa fa-circle-o">Go out with colleges</span>
-                    <button class="removeBtn fa fa-close"></button>
-                </div>
-            </div>
+            <ul id="taskListContainer" class="fa-ul">
+                <li class="todoTaskContainer accent-color-hover">
+                    <i class="fa-li fa fa-check-circle-o"></i><span class="taskLabel">Learn more about React</span>
+                    <button class="remove-btn fa fa-close"></button>
+                </li>
+                <li class="todoTaskContainer warn-color-hover">
+                    <i class="fa-li fa fa-circle-o"></i><span class="taskLabel">Go out with colleges</span>
+                    <button class="remove-btn fa fa-close"></button>
+                </li>
+            </ul>
         </div>
         <div class="card-footer">
             <div id="filterContainer">
                     <span>Filter:
-                        <button name="filterBtn" value="allFilter">all</button>
+                        <button name="filterBtn" value="allFilter" class="selected-filter">all</button>
                         |
                         <button name="filterBtn" value="todoFilter">todo</button>
                         |

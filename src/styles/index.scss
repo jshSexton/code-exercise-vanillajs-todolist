@@ -2,6 +2,15 @@ $primary-color: #009FE3;
 $accent-color: #509901;
 $warn-color: #F95454;
 
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+button {
+  background: none;
+  border: none;
+}
+
 .card {
   // css for a card background
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -38,18 +47,27 @@ $warn-color: #F95454;
 .todoTaskContainer {
   // css for the task item
 
-  .taskLabel {
+  & .taskLabel {
     // css for text of a task
-
-    &:before {
-      // css for the check-mark icon
-      margin-right: 10px;
-    }
+    margin-right: 1rem;
   }
 
-  .removeBtn {
+  .remove-btn {
     // css for the remove button
+    position: absolute;
+    right: 0;
     margin-left: 5px;
+    color: inherit;
+  }
+
+  &.accent-color-hover {
+    // css for the task item when it's hovered over body
+    color: $accent-color;
+  }
+
+  &.warn-color-hover {
+    // css for the task item when it's hovered remove
+    color: $warn-color;
   }
 }
 
@@ -63,10 +81,32 @@ $warn-color: #F95454;
 #createTaskContainer {
   margin-top: 5px;
   margin-bottom: 5px;
+
+  button {
+    color: $primary-color;
+  }
+
+  #taskInput {
+    border: none;
+    border-bottom: 2px $primary-color solid;
+
+    &::placeholder {
+      color: $primary-color;
+    }
+  }
 }
 
 #taskListContainer {
-  // css for the container of the to-do task items
+  // css for the container of the to-do task item
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+#filterContainer {
+  // css for the container of the to-do filter
+
+  & .selected-filter {
+    color: $primary-color;
+    text-decoration: underline;
+  }
 }
