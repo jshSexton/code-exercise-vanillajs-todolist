@@ -413,10 +413,14 @@ class TodoTaskCreation {
 
     onFormSubmit() {
         event.preventDefault();
+        let nInput = document.getElementById('taskInput').value;
+        if (nInput.trim() === '') {
+            return false;
+        }
         this.taskForm.dispatchEvent(
             new CustomEvent('creator_new_task_entered', {
                 detail: {
-                    nTaskDescription: document.getElementById('taskInput').value
+                    nTaskDescription: nInput.trim()
                 }
             })
         );
@@ -548,7 +552,7 @@ class TodoTaskFilters {
     }
 
     updateCounts(nTotal, nDone) {
-        if (typeof nTotal === 'number' && typeof nDone === 'number' && nTotal > nDone) {
+        if (typeof nTotal === 'number' && typeof nDone === 'number' && nTotal >= nDone) {
             this.doneCounts.done = nDone;
             this.doneCounts.total = nTotal;
         }
