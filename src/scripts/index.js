@@ -504,21 +504,36 @@ class TodoTaskList {
 //---------------------------------------------TodoTaskFilters---------------------------------------------
 class TodoTaskFilters {
     constructor(filterContainer) {
+        this.filterContainer = filterContainer;
         this.filterOptions = {
             allMode: 'allFilter',
             todoMode: 'todoFilter',
             doneMode: 'doneFilter'
         };
-        this.filterContainer = filterContainer;
-        this.filterMode = this.filterOptions.allMode;
+        this.doneCounts = {
+            total: 0,
+            done: 0
+        };
 
         this.buildFilterButtons();
-
-        // ----Setup EventListeners----
-
+        this.updateFilterState(this.filterOptions.allMode);
     }
 
     //--------------- Public Functions ---------------
+
+    // Getter for the filter options
+    get modes() {
+        return this.filterOptions;
+    }
+
+    updateCounts(nTotal, nDone) {
+        if (typeof nTotal === 'number' && typeof nDone === 'number' && nTotal > nDone) {
+            this.doneCounts.done = nDone;
+            this.doneCounts.total = nTotal;
+        }
+
+        this.updateBtnLabels();
+    }
 
     //--------------- Private Functions ---------------
     buildFilterButtons() {
@@ -531,21 +546,29 @@ class TodoTaskFilters {
         allBtn.id = 'all_filter_btn';
         allBtn.value = this.filterOptions.allMode;
         allBtn.textContent = 'all';
+        filterSpan.allBtn = allBtn;
 
         // filter button for showing to do
         let todoBtn = document.createElement('button');
         todoBtn.id = 'todo_filter_btn';
         todoBtn.value = this.filterOptions.todoMode;
         todoBtn.textContent = 'to do';
+        filterSpan.todoBtn = todoBtn;
 
         // filter button for showing done
         let doneBtn = document.createElement('button');
         doneBtn.id = 'done_filter_btn';
         doneBtn.value = this.filterOptions.doneMode;
         doneBtn.textContent = 'done';
+        filterSpan.doneBtn = doneBtn;
 
         // text node to separate buttons
         let pipeNode = document.createTextNode(' | ');
+
+        // ----Setup EventListeners----
+        filterSpan.allBtn.addEventListener('click', event => this.onFilterClick(this, event));
+        filterSpan.todoBtn.addEventListener('click', event => this.onFilterClick(this, event));
+        filterSpan.doneBtn.addEventListener('click', event => this.onFilterClick(this, event));
 
         //append elements in order to containing span
         filterSpan.appendChild(allBtn);
@@ -555,7 +578,47 @@ class TodoTaskFilters {
         filterSpan.appendChild(doneBtn);
 
         //append span to container
+        this.filterContainer.filterSpan = filterSpan;
         this.filterContainer.appendChild(filterSpan);
+    }
+
+    updateFilterState(nState) {
+        this.filterMode = nState;
+
+        // Reset all button states
+        this.filterContainer.filterSpan.allBtn.className = '';
+        this.filterContainer.filterSpan.todoBtn.className = '';
+        this.filterContainer.filterSpan.doneBtn.className = '';
+
+        // Change css for the selected button
+        switch (this.filterMode) {
+            case this.filterOptions.allMode:
+                this.filterContainer.filterSpan.allBtn.className = 'selected-filter';
+                break;
+            case this.filterOptions.todoMode:
+                this.filterContainer.filterSpan.todoBtn.className = 'selected-filter';
+                break;
+            case this.filterOptions.doneMode:
+                this.filterContainer.filterSpan.doneBtn.className = 'selected-filter';
+                break;
+        }
+    }
+
+    updateBtnLabels() {
+        this.filterContainer.filterSpan.allBtn.textContent = 'all (' + this.doneCounts.total + ')';
+        this.filterContainer.filterSpan.todoBtn.textContent = 'to do (' + (this.doneCounts.total - this.doneCounts.done) + ')';
+        this.filterContainer.filterSpan.doneBtn.textContent = 'done (' + this.doneCounts.done + ')';
+    }
+
+    onFilterClick(this_ref, event) {
+        this_ref.updateFilterState(event.target.value);
+        this_ref.filterContainer.dispatchEvent(
+            new CustomEvent('filter_mode_change', {
+                detail: {
+                    nFilterMode: event.target.value,
+                }
+            })
+        );
     }
 }
 
@@ -599,6 +662,11 @@ class TodoController {
         this.todoCreator.taskForm.addEventListener('creator_new_task_entered', (event) => {
             this.onCreatorAddTask(this, event.detail.nTaskDescription);
         });
+
+        // --TodoFilter Events
+        this.todoFilters.filterContainer.addEventListener('filter_mode_change', (event) => {
+            this.onFilterModeChange(this, event.detail.nFilterMode);
+        });
     }
 
     // List reported a finish click, call the service to update the server
@@ -638,5 +706,23 @@ class TodoController {
 
         this.todoData = serviceResponse.todoTasks;
         this.todoTaskList.updateList(this.todoData);
+    }
+
+    // Filter reported change in mode, update list
+    onFilterModeChange(this_ref, nFilterMode) {
+        switch (nFilterMode) {
+            case this_ref.todoFilters.modes.allMode:
+                this_ref.todoTaskList.updateList(this.todoData);
+                break;
+            case this_ref.todoFilters.modes.todoMode:
+                this_ref.todoTaskList.updateList(this.todoData.filter(dataItem => dataItem.isFinished === false));
+                break;
+            case this_ref.todoFilters.modes.doneMode:
+                this_ref.todoTaskList.updateList(this.todoData.filter(dataItem => dataItem.isFinished === true));
+                break;
+            default:
+                this_ref.todoTaskList.updateList(this.todoData);
+                break;
+        }
     }
 }
