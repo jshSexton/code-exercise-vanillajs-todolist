@@ -1,6 +1,7 @@
 $primary-color: #009FE3;
 $accent-color: #509901;
 $warn-color: #F95454;
+$faded-color: #D3D3D3;
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -57,17 +58,35 @@ button {
     position: absolute;
     right: 0;
     margin-left: 5px;
-    color: inherit;
+    color: $faded-color;
+  }
+
+  &.finished-task {
+    color: $faded-color;
+    text-decoration: line-through;
+    i {
+      color: $accent-color;
+    }
   }
 
   &.accent-color-hover {
     // css for the task item when it's hovered over body
     color: $accent-color;
+
+    .remove-btn {
+      // css override for the remove-btn
+      color: $accent-color;
+    }
   }
 
   &.warn-color-hover {
     // css for the task item when it's hovered remove
     color: $warn-color;
+
+    .remove-btn {
+      // css override for the remove-btn
+      color: $warn-color;
+    }
   }
 }
 
