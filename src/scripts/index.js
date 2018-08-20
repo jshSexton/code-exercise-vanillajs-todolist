@@ -732,7 +732,6 @@ class TodoController {
         }
 
         this.todoData = serviceResponse.todoTasks;
-        console.log('data after remove', serviceResponse.todoTasks);
         this.displayTasksByFilter();
     }
 
