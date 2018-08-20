@@ -34,6 +34,7 @@ class PretendApiServer {
                 isFinished: true
             },
         ];
+        this.oldestId = 4;
     }
 
     //--------------- Public Functions ---------------
@@ -54,7 +55,7 @@ class PretendApiServer {
             errors: []
         };
         let newTask = {
-            id: (this.dummyTaskData.length + 1),
+            id: (++this.oldestId),
             description: newTaskDescription,
             isFinished: false
         };
@@ -305,74 +306,88 @@ class TodoTaskItem {
         // ----Setup EventListeners----
         // --Click Events--
         taskElement.checkCircle.addEventListener('click', () => {
-            this.onTaskClick(this);
+            this.onTaskClick();
         });
         taskElement.taskLabel.addEventListener('click', () => {
-            this.onTaskClick(this);
+            this.onTaskClick();
         });
         taskElement.removeBtn.addEventListener('click', () => {
-            this.onRemoveClick(this);
+            this.onRemoveClick();
         });
 
         // --Mouse Enter Events--
+        taskElement.addEventListener('mouseenter', () => {
+            this.onContainerHoverEnter();
+        });
         taskElement.checkCircle.addEventListener('mouseenter', () => {
-            this.onTaskHoverEnter(this);
+            this.onTaskHoverEnter();
         });
         taskElement.taskLabel.addEventListener('mouseenter', () => {
-            this.onTaskHoverEnter(this);
+            this.onTaskHoverEnter();
         });
         taskElement.removeBtn.addEventListener('mouseenter', () => {
-            this.onRemoveHoverEnter(this);
+            this.onRemoveHoverEnter();
         });
 
         // --Mouse Leave Events--
+        taskElement.addEventListener('mouseleave', () => {
+            this.onContainerHoverLeave();
+        });
         taskElement.checkCircle.addEventListener('mouseleave', () => {
-            this.onTaskHoverLeave(this);
+            this.onTaskHoverLeave();
         });
         taskElement.taskLabel.addEventListener('mouseleave', () => {
-            this.onTaskHoverLeave(this);
+            this.onTaskHoverLeave();
         });
         taskElement.removeBtn.addEventListener('mouseleave', () => {
-            this.onRemoveHoverLeave(this);
+            this.onRemoveHoverLeave();
         });
 
         return taskElement;
     }
 
     // Let parent know there was a click to finish or unfinish this task
-    onTaskClick(this_ref) {
-        this_ref.taskElement.dispatchEvent(
-            new CustomEvent('task_click', {detail: {clickToFinish: !this_ref.taskData.isFinished}})
+    onTaskClick() {
+        this.taskElement.dispatchEvent(
+            new CustomEvent('task_click', {detail: {clickToFinish: !this.taskData.isFinished}})
         );
     }
 
     // Let parent know there was a click to remove this task
-    onRemoveClick(this_ref) {
-        this_ref.taskElement.dispatchEvent(new Event('remove_click'));
+    onRemoveClick() {
+        this.taskElement.dispatchEvent(new Event('remove_click'));
     }
 
-    // Mouse has entered hovering over the task, update styling
-    onTaskHoverEnter(this_ref) {
-        if (this_ref.taskData.isFinished) return;    // finish styling takes priority
-        this_ref.taskElement.className += ' accent-color-hover';
+    // Mouse has entered hovering over the task container, update styling (show/hide remove)
+    onContainerHoverEnter() {
+        this.taskElement.className += ' general-hover';
     }
 
-    // Mouse has left hovering over the task, update styling
-    onTaskHoverLeave(this_ref) {
-        if (this_ref.taskData.isFinished) return;    // finish styling takes priority
-        this_ref.taskElement.className = this_ref.taskElement.className.replace(' accent-color-hover', '');
+    // Mouse has left hovering over the task container, update styling (show/hide remove)
+    // Mouse has entered hovering over the task container, update styling (show/hide remove)
+    onContainerHoverLeave() {
+        this.taskElement.className = this.taskElement.className.replace(' general-hover', '');
     }
 
-    // Mouse has entered hovering over the remove button, update styling
-    onRemoveHoverEnter(this_ref) {
-        if (this_ref.taskData.isFinished) return;    // finish styling takes priority
-        this_ref.taskElement.className += ' warn-color-hover';
+    // Mouse has entered hovering over the task, update styling (coloring)
+    onTaskHoverEnter() {
+        if (this.taskData.isFinished) return;    // finish styling takes priority
+        this.taskElement.className += ' accent-color-hover';
     }
 
-    // Mouse has left hovering over the remove button, update styleing
-    onRemoveHoverLeave(this_ref) {
-        if (this_ref.taskData.isFinished) return;    // finish styling takes priority
-        this_ref.taskElement.className = this_ref.taskElement.className.replace(' warn-color-hover', '');
+    // Mouse has left hovering over the task, update styling (coloring)
+    onTaskHoverLeave() {
+        this.taskElement.className = this.taskElement.className.replace(' accent-color-hover', '');
+    }
+
+    // Mouse has entered hovering over the remove button, update styling (coloring)
+    onRemoveHoverEnter() {
+        this.taskElement.className += ' warn-color-hover';
+    }
+
+    // Mouse has left hovering over the remove button, update styling (coloring)
+    onRemoveHoverLeave() {
+        this.taskElement.className = this.taskElement.className.replace(' warn-color-hover', '');
     }
 }
 
@@ -383,7 +398,7 @@ class TodoTaskCreation {
 
         // ----Setup Event Listeners----
         this.taskForm.addEventListener('submit', () => {
-            this.onFormSubmit(this);
+            this.onFormSubmit();
         });
     }
 
@@ -396,16 +411,16 @@ class TodoTaskCreation {
 
     //--------------- Private Functions ---------------
 
-    onFormSubmit(this_ref) {
+    onFormSubmit() {
         event.preventDefault();
-        this_ref.taskForm.dispatchEvent(
+        this.taskForm.dispatchEvent(
             new CustomEvent('creator_new_task_entered', {
                 detail: {
                     nTaskDescription: document.getElementById('taskInput').value
                 }
             })
         );
-        this_ref.taskForm.reset();
+        this.taskForm.reset();
     }
 }
 
@@ -464,10 +479,10 @@ class TodoTaskList {
 
                 // ----Setup EventListeners----
                 newTaskHtml.addEventListener('task_click', event => {
-                    this.onTaskFinishClick(this, newTask, event);
+                    this.onTaskFinishClick(newTask, event);
                 });
                 newTaskHtml.addEventListener('remove_click', event => {
-                    this.onTaskRemoveClick(this, newTask);
+                    this.onTaskRemoveClick(newTask);
                 });
 
                 this.todoListContainer.appendChild(newTaskHtml);
@@ -478,8 +493,8 @@ class TodoTaskList {
     //--------------- Private Functions ---------------
 
     // Got an event from a task to finish or unfinish a task, let controller know to do an service call
-    onTaskFinishClick(this_ref, taskItem, event) {
-        this_ref.todoListContainer.dispatchEvent(
+    onTaskFinishClick(taskItem, event) {
+        this.todoListContainer.dispatchEvent(
             new CustomEvent('list_task_finish_click', {
                 detail: {
                     taskId: taskItem.data.id,
@@ -490,8 +505,8 @@ class TodoTaskList {
     }
 
     // Got an event from a task to remove a task, let controller know to do an service call
-    onTaskRemoveClick(this_ref, taskItem) {
-        this_ref.todoListContainer.dispatchEvent(
+    onTaskRemoveClick(taskItem) {
+        this.todoListContainer.dispatchEvent(
             new CustomEvent('list_task_remove_click', {
                 detail: {
                     taskId: taskItem.data.id,
@@ -514,6 +529,7 @@ class TodoTaskFilters {
             total: 0,
             done: 0
         };
+        this.filterMode = this.filterOptions.allMode;
 
         this.buildFilterButtons();
         this.updateFilterState(this.filterOptions.allMode);
@@ -524,6 +540,11 @@ class TodoTaskFilters {
     // Getter for the filter options
     get modes() {
         return this.filterOptions;
+    }
+
+    // Getter for the currently selected mode
+    get currentMode() {
+        return this.filterMode;
     }
 
     updateCounts(nTotal, nDone) {
@@ -566,9 +587,9 @@ class TodoTaskFilters {
         let pipeNode = document.createTextNode(' | ');
 
         // ----Setup EventListeners----
-        filterSpan.allBtn.addEventListener('click', event => this.onFilterClick(this, event));
-        filterSpan.todoBtn.addEventListener('click', event => this.onFilterClick(this, event));
-        filterSpan.doneBtn.addEventListener('click', event => this.onFilterClick(this, event));
+        filterSpan.allBtn.addEventListener('click', event => this.onFilterClick(event));
+        filterSpan.todoBtn.addEventListener('click', event => this.onFilterClick(event));
+        filterSpan.doneBtn.addEventListener('click', event => this.onFilterClick(event));
 
         //append elements in order to containing span
         filterSpan.appendChild(allBtn);
@@ -610,9 +631,9 @@ class TodoTaskFilters {
         this.filterContainer.filterSpan.doneBtn.textContent = 'done (' + this.doneCounts.done + ')';
     }
 
-    onFilterClick(this_ref, event) {
-        this_ref.updateFilterState(event.target.value);
-        this_ref.filterContainer.dispatchEvent(
+    onFilterClick(event) {
+        this.updateFilterState(event.target.value);
+        this.filterContainer.dispatchEvent(
             new CustomEvent('filter_mode_change', {
                 detail: {
                     nFilterMode: event.target.value,
@@ -646,83 +667,90 @@ class TodoController {
         }
 
         this.todoData = serviceResponse.todoTasks;
-        this.todoTaskList.updateList(this.todoData);
+        this.displayTasksByFilter();
 
         // ----Setup Event Listeners----
 
         // --TodoTaskList Events--
         this.todoTaskList.listContainer.addEventListener('list_task_finish_click', (event) => {
-            this.onListItemFinishClick(this, event.detail.taskId, event.detail.nFinishState);
+            this.onListItemFinishClick(event.detail.taskId, event.detail.nFinishState);
         });
         this.todoTaskList.listContainer.addEventListener('list_task_remove_click', (event) => {
-            this.onListItemRemoveClick(this, event.detail.taskId);
+            this.onListItemRemoveClick(event.detail.taskId);
         });
 
         // --TodoCreator Events
         this.todoCreator.taskForm.addEventListener('creator_new_task_entered', (event) => {
-            this.onCreatorAddTask(this, event.detail.nTaskDescription);
+            this.onCreatorAddTask(event.detail.nTaskDescription);
         });
 
         // --TodoFilter Events
-        this.todoFilters.filterContainer.addEventListener('filter_mode_change', (event) => {
-            this.onFilterModeChange(this, event.detail.nFilterMode);
+        this.todoFilters.filterContainer.addEventListener('filter_mode_change', () => {
+            this.onFilterModeChange();
         });
     }
 
+    // Tell list to show by whatever filter is currently selected.
+    displayTasksByFilter() {
+        switch (this.todoFilters.currentMode) {
+            case this.todoFilters.modes.allMode:
+                this.todoTaskList.updateList(this.todoData);
+                break;
+            case this.todoFilters.modes.todoMode:
+                this.todoTaskList.updateList(this.todoData.filter(dataItem => dataItem.isFinished === false));
+                break;
+            case this.todoFilters.modes.doneMode:
+                this.todoTaskList.updateList(this.todoData.filter(dataItem => dataItem.isFinished === true));
+                break;
+            default:
+                this.todoTaskList.updateList(this.todoData);
+                break;
+        }
+        this.todoFilters.updateCounts(this.todoData.length, this.todoData.filter(dataItem => dataItem.isFinished === true).length);
+    }
+
     // List reported a finish click, call the service to update the server
-    onListItemFinishClick(this_ref, taskId, nFinishState) {
+    onListItemFinishClick(taskId, nFinishState) {
         // serviceResponse should be a promise
-        let serviceResponse = this_ref.todoService.updateTask(taskId, null, nFinishState);
+        let serviceResponse = this.todoService.updateTask(taskId, null, nFinishState);
         if (!serviceResponse.actionSuccess) {
             // Error handling section
             console.log('Error: todoService updateTask error');
         }
 
         this.todoData = serviceResponse.todoTasks;
-        this.todoTaskList.updateList(this.todoData);
+        this.displayTasksByFilter();
     }
 
     // List reported a remove click, call service to update the server
-    onListItemRemoveClick(this_ref, taskId) {
+    onListItemRemoveClick(taskId) {
         // serviceResponse should be a promise
-        let serviceResponse = this_ref.todoService.removeTask(taskId);
+        let serviceResponse = this.todoService.removeTask(taskId);
         if (!serviceResponse.actionSuccess) {
             // Error handling section
             console.log('Error: todoService removeTask error');
         }
 
         this.todoData = serviceResponse.todoTasks;
-        this.todoTaskList.updateList(this.todoData);
+        console.log('data after remove', serviceResponse.todoTasks);
+        this.displayTasksByFilter();
     }
 
     // Creator reported a new task entered, call service to update the server
-    onCreatorAddTask(this_ref, nTaskDescription) {
+    onCreatorAddTask(nTaskDescription) {
         // serviceResponse should be a promise
-        let serviceResponse = this_ref.todoService.addNewTask(nTaskDescription);
+        let serviceResponse = this.todoService.addNewTask(nTaskDescription);
         if (!serviceResponse.actionSuccess) {
             // Error handling section
             console.log('Error: todoService addNewTask error');
         }
 
         this.todoData = serviceResponse.todoTasks;
-        this.todoTaskList.updateList(this.todoData);
+        this.displayTasksByFilter();
     }
 
     // Filter reported change in mode, update list
-    onFilterModeChange(this_ref, nFilterMode) {
-        switch (nFilterMode) {
-            case this_ref.todoFilters.modes.allMode:
-                this_ref.todoTaskList.updateList(this.todoData);
-                break;
-            case this_ref.todoFilters.modes.todoMode:
-                this_ref.todoTaskList.updateList(this.todoData.filter(dataItem => dataItem.isFinished === false));
-                break;
-            case this_ref.todoFilters.modes.doneMode:
-                this_ref.todoTaskList.updateList(this.todoData.filter(dataItem => dataItem.isFinished === true));
-                break;
-            default:
-                this_ref.todoTaskList.updateList(this.todoData);
-                break;
-        }
+    onFilterModeChange() {
+        this.displayTasksByFilter();
     }
 }

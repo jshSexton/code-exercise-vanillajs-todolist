@@ -4,10 +4,12 @@ $warn-color: #F95454;
 $faded-color: #D3D3D3;
 
 body {
+  // css for the page
   font-family: 'Roboto', sans-serif;
 }
 
 button {
+  // css for buttons globally
   background: none;
   border: none;
 }
@@ -28,7 +30,9 @@ button {
     padding-bottom: 20px;
 
     h3 {
+      // css for header text
       margin: 0;
+      font-weight: normal;
     }
   }
 
@@ -39,18 +43,28 @@ button {
 
   .card-footer {
     // css for the footer in a card
-    margin-top: 15px;
+    margin-top: 10px;
     margin-bottom: 5px;
     padding-left: 10px;
+    padding-top: 5px;
+    border-top: 2px $faded-color solid;
   }
 }
 
 .todoTaskContainer {
   // css for the task item
+  padding: 5px 0;
+  border-bottom: 1px $faded-color solid;
 
   & .taskLabel {
     // css for text of a task
     margin-right: 1rem;
+    cursor: pointer;
+  }
+
+  & i {
+    // css for the circle icon
+    cursor: pointer;
   }
 
   .remove-btn {
@@ -59,12 +73,16 @@ button {
     right: 0;
     margin-left: 5px;
     color: $faded-color;
+    cursor: pointer;
+    display: none;
   }
 
   &.finished-task {
+    // css for when a task is completed
     color: $faded-color;
     text-decoration: line-through;
     i {
+      // css override for the circle icon
       color: $accent-color;
     }
   }
@@ -77,6 +95,11 @@ button {
       // css override for the remove-btn
       color: $accent-color;
     }
+
+    & i {
+      // css override for the circle icon
+      color: $accent-color;
+    }
   }
 
   &.warn-color-hover {
@@ -86,6 +109,20 @@ button {
     .remove-btn {
       // css override for the remove-btn
       color: $warn-color;
+    }
+
+    & i {
+      // css override for the circle icon
+      color: $warn-color;
+    }
+  }
+
+  &.general-hover {
+    // css for the task when it's hovered over anywhere
+
+    .remove-btn {
+      // css override for the remove-btn
+      display: inline-block;
     }
   }
 }
@@ -103,6 +140,7 @@ button {
 
   button {
     color: $primary-color;
+    cursor: pointer;
   }
 
   #taskInput {
@@ -127,5 +165,9 @@ button {
   & .selected-filter {
     color: $primary-color;
     text-decoration: underline;
+  }
+
+  button {
+    cursor: pointer;
   }
 }
