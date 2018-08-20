@@ -1,6 +1,6 @@
-# Webpack Frontend Starterkit
+# CodeExerciseTodolist - Vanilla JS
 
-A lightweight foundation for your next webpack based frontend project.
+To-Do List built using ES6 and packaged with webpack
 
 
 ### Installation
